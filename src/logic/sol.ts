@@ -6,44 +6,32 @@ import bs58 from "bs58";
 
 
 
-export const SolanaWallet = ({keyPhrase}: {keyPhrase?: string}) => {
-
-    if(keyPhrase){
+export const SolanaWallet = ({keyPhrase}: {keyPhrase?: string | null}) => {
+    if (keyPhrase) {
         const seed = mnemonicToSeedSync(keyPhrase);
-        logic(seed, keyPhrase);
-    }else{
+        return generateSolanaWallets(seed, keyPhrase);
+    } else {
         const mnemonic = generateMnemonic();
         const seed = mnemonicToSeedSync(mnemonic);
-        logic(seed, mnemonic);
+        return generateSolanaWallets(seed, mnemonic);
     }
 }
 
 
 
-const logic = (seed: Buffer, mnemonic: string) =>{
+const generateSolanaWallets = (seed: Buffer, mnemonic: string) =>{
+    const wallets: Array<{ mnemonic: string; publicKey: string; privateKey: string }> = [];
     for (let i = 0; i < 4; i++) {
         const path = `m/44'/501'/${i}'/0'`;
-
-        const derivedSeed = derivePath(path, seed.toString("hex")).key
-
-        const keypair = nacl.sign.keyPair.fromSeed(new Uint8Array(derivedSeed))
-
-        const SolanaKeyPair = Keypair.fromSecretKey(keypair.secretKey);
-
-        const secret = bs58.encode(SolanaKeyPair.secretKey)
-
-        console.log(`Account ${i}:`);
-        console.log(`Mnemonic: ${mnemonic}`);
-        console.log(`Public Key : ${SolanaKeyPair.publicKey.toBase58()}`);
-        console.log(`Secret Key: ${secret}`);
-
-        return {
+        const derivedSeed = derivePath(path, seed.toString("hex")).key;
+        const keypair = nacl.sign.keyPair.fromSeed(new Uint8Array(derivedSeed));
+        const solanaKeyPair = Keypair.fromSecretKey(keypair.secretKey);
+        const secret = bs58.encode(solanaKeyPair.secretKey);
+        wallets.push({
             mnemonic,
-            publicKey: SolanaKeyPair.publicKey.toBase58(),
+            publicKey: solanaKeyPair.publicKey.toBase58(),
             privateKey: secret
-        }
-
+        });
     }
+    return wallets;
 }
-
-SolanaWallet({keyPhrase: "test"})

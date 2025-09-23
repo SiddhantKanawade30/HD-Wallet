@@ -1,10 +1,15 @@
-import { Button } from "./button";
+import { Button } from "./Button";
 
-export const Options = () => {
+enum Blockchain {
+  SOLANA = "SOLANA",
+  ETHEREUM = "ETHEREUM",
+}
+
+export const Options = ({setBlockchain}: {setBlockchain: (blockchain: Blockchain) => void}) => {
   return (
     <div className="flex gap-2 pt-10">
-        <Button>Solana</Button>
-        <Button>Ethereum</Button>
+        <Button onClick={() => setBlockchain(Blockchain.SOLANA)}>Solana</Button>
+        <Button onClick={() => setBlockchain(Blockchain.ETHEREUM)}>Ethereum</Button>
     </div>
   )
 }

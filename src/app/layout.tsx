@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Navbar } from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +28,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+         <div className="min-h-screen w-full relative">
+  {/* Azure Depths */}
+  <div
+    className="absolute inset-0 z-0"
+    style={{
+      background: "radial-gradient(125% 125% at 50% 100%, #000000 40%, #010133 100%)",
+    }}
+  />
+  {/* Your Content/Components */}
+ 
+  <div className="relative z-10  pt-8 max-w-7xl mx-auto">
+  <Navbar />
+  {children}
+  </div>
+</div>
+        
       </body>
     </html>
   );
